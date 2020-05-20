@@ -25,7 +25,7 @@ SECRET_KEY = 'e!8hs%*io8ha2e6i92p_o_$x^1k+s=#maxw^ze0#z#7aa*6__('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','.cfe.sh']
 
 
 # Application definition
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'tweets',
 ]
 
 MIDDLEWARE = [
@@ -49,12 +51,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+MAX_TWEET_LENGTH=240
+
 ROOT_URLCONF = 'tweetme2.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR,"templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -113,8 +117,25 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+LOGIN_URL="/login"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-
+TWEET_ACTION_OPTIONS=["like","unlike","retweet"]
 STATIC_URL = '/static/'
+
+DEFAULT_RENDERER_CLASSES = [
+        'rest_framework.renderers.JSONRenderer',
+    ]
+if DEBUG:
+    DEFAULT_RENDERER_CLASSES+=[
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES,
+    
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+
+}
